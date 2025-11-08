@@ -1,11 +1,11 @@
-# Mini Question-Answering System using Pretrained Transformer (BERT)
-
 from transformers import pipeline
 
-# Load pretrained QA model
-qa_pipeline = pipeline("question-answering", model="bert-large-uncased-whole-word-masking-finetuned-squad")
+# Load an improved pretrained Question-Answering model
+qa_pipeline = pipeline("question-answering", model="deepset/roberta-base-squad2")
 
-# Health domain context – Nutrition and Healthy Lifestyle
+# ---------------------------
+# Health Domain Context
+# ---------------------------
 context = """
 Nutrition plays a vital role in maintaining good health and preventing chronic diseases. A balanced diet provides the body with 
 essential nutrients such as carbohydrates, proteins, fats, vitamins, and minerals that are necessary for proper functioning. Poor 
@@ -30,10 +30,25 @@ wellness requires a holistic approach that balances nutrition, exercise, mental 
 modern tools wisely, individuals can take control of their health and lead more productive, happier lives.
 """
 
-# Ask questions until user exits
+print("🧠 Mini-QA-System-Transformer (Health – Nutrition and Healthy Lifestyle)")
+print("Type 'exit' to stop.\n")
+
+# ---------------------------
+# Interactive Question Loop
+# ---------------------------
 while True:
-    question = input("\nAsk a question about nutrition (or type 'exit' to quit): ")
+    question = input("Ask a question about health or nutrition (or type 'exit' to quit): ")
     if question.lower() == "exit":
+        print("👋 Exiting the QA system. Stay healthy!")
         break
+
+    # Run QA model
     result = qa_pipeline(question=question, context=context)
-    print(f"Answer: {result['answer']} (Confidence: {result['score']:.2f})")
+
+    # Confidence check
+    if result["score"] < 0.5:
+        print("⚠️  The model is uncertain about the answer. Try rephrasing your question.\n")
+
+    print(f"🧩 Question: {question}")
+    print(f"✅ Answer: {result['answer']}")
+    print(f"📊 Confidence: {result['score']:.2f}\n")
